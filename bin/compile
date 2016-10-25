@@ -8,6 +8,7 @@ set -o pipefail
 set -eu
 # move hidden files too, just in case
 shopt -s dotglob
+MCRYPT_VERSION="2.5.8"
 
 STACK=${STACK:-cedar-14} # Anvil has none
 build_dir=$1
@@ -342,6 +343,9 @@ function download_and_install_ibm_db() {
   echo "Installing ibm_db2 ..."
   pecl install ibm_db2
 }
+MCRYPT_URL="https://heroku-buildpack-php.s3.amazonaws.com/mcrypt-""$MCRYPT_VERSION""$heroku_rev"".tar.gz"
+echo "-----> Bundling mcrypt version $MCRYPT_VERSION"
+curl --silent --max-time 60 --location "$MCRYPT_URL" | tar xz
 
 if [ -f clidriver/lib/libdb2.so ]; then
   # we have from cache, just restore php's db2.so
