@@ -290,7 +290,6 @@ for dir in $CACHED_DIRS; do
   cp -R $CACHE_DIR/$dir/* . &> /dev/null || true
 done
 
-function download_and_install_ibm_db() {
   CLI_URL="https://public.dhe.ibm.com/ibmdl/export/pub/software/data/db2/drivers/odbc_cli/linuxx64_odbc_cli.tar.gz"
 
   echo "Downloading IBM Data Server Driver...."
@@ -300,15 +299,15 @@ function download_and_install_ibm_db() {
   rm -rf clidriver
   tar -xzf linuxx64_odbc_cli.tar.gz
 
-  echo "Downloading autoconf..."
-  curl -LO http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
+  #echo "Downloading autoconf..."
+  #curl -LO http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
 
-  echo "Downloading m4..."
-  curl -LO http://ftp.gnu.org/pub/gnu/m4/m4-1.4.13.tar.gz
+  #echo "Downloading m4..."
+  #curl -LO http://ftp.gnu.org/pub/gnu/m4/m4-1.4.13.tar.gz
 
   # Extracting m4 and autoconf
-  tar -xzf autoconf-2.69.tar.gz
-  tar -xzf m4-1.4.13.tar.gz
+  #tar -xzf autoconf-2.69.tar.gz
+  #tar -xzf m4-1.4.13.tar.gz
 
     
   echo "Installing m4 and autoconf ..."
@@ -342,20 +341,11 @@ function download_and_install_ibm_db() {
 
   echo "Installing ibm_db2 ..."
   pecl install ibm_db2
-}
-MCRYPT_URL="https://heroku-buildpack-php.s3.amazonaws.com/mcrypt-""$MCRYPT_VERSION""$heroku_rev"".tar.gz"
+
+  MCRYPT_URL="https://heroku-buildpack-php.s3.amazonaws.com/mcrypt-""$MCRYPT_VERSION""$heroku_rev"".tar.gz"
 echo "-----> Bundling mcrypt version $MCRYPT_VERSION"
 curl --silent --max-time 60 --location "$MCRYPT_URL" | tar xz
 
-APACHE_URL="https://heroku-buildpack-php.s3.amazonaws.com/apache-""$APACHE_VERSION""$heroku_rev"".tar.gz"
-echo "-----> Bundling Apache version $APACHE_VERSION"
-curl --silent --max-time 60 --location "$APACHE_URL" | tar xz
-
-PHP_URL="https://heroku-buildpack-php.s3.amazonaws.com/php-$PHP_VERSION""$heroku_rev"".tar.gz"
-cp $LP_DIR/php.tar.gz .
-tar -xzf php.tar.gz
-
-mv $PHP_PATH/libphp5.so $APACHE_PATH/modules
 
 # update config files
 cp $LP_DIR/conf/httpd.conf $APACHE_PATH/conf
@@ -371,11 +361,10 @@ done
 if [ -f clidriver/lib/libdb2.so ]; then
   # we have from cache, just restore php's db2.so
   echo "-------> restoring ibm_db2 from cache"
-  mv ibm_db2.so php/lib/php/extensions/no-debug-non-zts-20121212/
+  mv ibm_db2.so php/lib/php/extensions/no-debug-non-zts-20151012/
   echo "-------> restored ibm_db2"
 else
   echo "-------> downloading and installing ibm_db2"
-  download_and_install_ibm_db
   echo "-------> caching ibm_db2 and dependencies"
   for dir in $CACHED_DIRS; do
     mkdir -p $CACHE_DIR/$dir
