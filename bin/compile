@@ -141,17 +141,24 @@ if composer install -d "$build_dir/.heroku/php" --no-dev 2>&1 | tee $build_dir/.
     :
 else
     error "Failed to install system packages.
+
 Your platform requirements (for runtimes and extensions) could
 not be resolved to an installable set of dependencies, or a
 repository was unreachable.
+
 Full error information from installation attempt:
+
 $(cat $build_dir/.heroku/php/install.log | sed -e 's/heroku-sys\///g' -e 's/^Loading composer repositories with package information/Loading repositories with available runtimes and extensions/' -e 's/^Installing dependencies.*//' -e '/^Potential causes:/,$d' -e 's/^/> /')
+
 Please verify that all requirements for runtime versions in
 '$COMPOSER_LOCK' are compatible with the list below, and ensure
 all required extensions are available for the desired runtimes.
+
 For reference, the following runtimes are currently available:
+
 PHP:  $(composer show -d "$build_dir/.heroku/php" --available heroku-sys/php 2>&1 | sed -n 's/^versions : //p' | fold -s -w 58 || true)
 HHVM: $(composer show -d "$build_dir/.heroku/php" --available heroku-sys/hhvm 2>&1 | sed -n 's/^versions : //p' | fold -s -w 58 || true)
+
 For a list of supported runtimes & extensions on Heroku, please
 refer to: https://devcenter.heroku.com/articles/php-support"
 fi
